@@ -1,0 +1,21 @@
+# kind-multinode-gpu.yaml (正确版本)
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  image: kindest/node:v1.29.2
+- role: worker
+  image: kindest/node:v1.29.2
+- role: worker
+  image: kindest/node:v1.29.2
+
+# <<<<<<<<<<<<<<< 【核心修正】新增一个 nvidia 运行时，而不是替换默认的 runc
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
+    privileged_without_host_devices = false
+    runtime_engine = ""
+    runtime_root = ""
+    runtime_type = "io.containerd.runc.v2"
+    [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
+      BinaryName = "/usr/bin/nvidia-container-runtime"

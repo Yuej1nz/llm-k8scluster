@@ -1,0 +1,11 @@
+# nvidia-values.yaml
+affinity: {}
+
+tolerations:
+  - key: "nvidia.com/gpu"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+# 同时，请检查并确保 nodeSelector 部分是空的或被注释掉，除非您确实给节点打了标签
+# nodeSelector: {}
