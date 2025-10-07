@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qwen-awq-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qwen-awq
+  template:           # <--- 这是 Pod 模板的开始
+    metadata:
+      labels:
+        app: qwen-awq
+    spec:             # <<<<< 关键! 这个 'spec' 定义了 Pod 的规格，它必须在这里
+      tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Exists"
+        effect: "NoSchedule"
+      containers:
+      - name: qwen-awq-container
+        image: qwen1.8b-awq:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            nvidia.com/gpu: 1
